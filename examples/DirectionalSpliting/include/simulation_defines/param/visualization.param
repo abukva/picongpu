@@ -33,7 +33,7 @@ BOOST_CONSTEXPR_OR_CONST float_64 scale_image = 1.0;
 /*if true image is scaled if cellsize is not quadratic, else no scale*/
 BOOST_CONSTEXPR_OR_CONST bool scale_to_cellsize = true;
 
-BOOST_CONSTEXPR_OR_CONST bool white_box_per_GPU = false;
+BOOST_CONSTEXPR_OR_CONST bool white_box_per_GPU = true;
 
 namespace visPreview
 {
@@ -48,7 +48,7 @@ namespace visPreview
 //             regime causes a bubble with radius of approx. the laser's
 //             beam waist (use for bubble fields)
 #define EM_FIELD_SCALE_CHANNEL1 1
-#define EM_FIELD_SCALE_CHANNEL2 -1
+#define EM_FIELD_SCALE_CHANNEL2 1
 #define EM_FIELD_SCALE_CHANNEL3 -1
 
 // multiply highest undisturbed particle density with factor
