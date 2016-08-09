@@ -285,6 +285,20 @@ public:
 
         laser = new LaserPhysics(cellDescription->getGridLayout());
 
+        // Initialize random number generator and synchrotron functions, if there are synchrotron photon species
+        typedef typename PMacc::particles::traits::FilterByFlag<VectorAllSpecies,
+                                                                synchrotronPhotons<> >::type AllSynchrotronPhotonsSpecies;
+        if(!bmpl::empty<AllSynchrotronPhotonsSpecies>::value)
+        {
+            // create factory for the random number generator
+            this->rngFactory = new RNGFactory(Environment<simDim>::get().SubGrid().getLocalDomain().size);
+            // init factory
+            PMacc::GridController<simDim>& gridCon = PMacc::Environment<simDim>::get().GridController();
+            this->rngFactory->init(gridCon.getScalarPosition());
+
+            this->synchrotronFunctions.init();
+        }
+
         ForEach<VectorAllSpecies, particles::CreateSpecies<bmpl::_1>, MakeIdentifier<bmpl::_1> > createSpeciesMemory;
         createSpeciesMemory(forward(particleStorage), cellDescription);
 
@@ -341,20 +355,6 @@ public:
 
         /* add CUDA streams to the StreamController for concurrent execution */
         Environment<>::get().StreamController().addStreams(6);
-
-        // create factory for the random number generator
-        this->rngFactory = new RNGFactory(Environment<simDim>::get().SubGrid().getLocalDomain().size);
-        // init factory
-        PMacc::GridController<simDim>& gridCon = PMacc::Environment<simDim>::get().GridController();
-        this->rngFactory->init(gridCon.getScalarPosition());
-
-        // Initialize synchrotron functions, if there are synchrotron photon species
-        typedef typename PMacc::particles::traits::FilterByFlag<VectorAllSpecies,
-                                                                synchrotronPhotons<> >::type AllSynchrotronPhotonsSpecies;
-        if(!bmpl::empty<AllSynchrotronPhotonsSpecies>::value)
-        {
-            this->synchrotronFunctions.init();
-        }
     }
 
     virtual uint32_t fillSimulation()
@@ -507,6 +507,7 @@ public:
 
             /* without interpolation, we do not need to access the FieldJ GUARD
              * and can therefor overlap communication of GUARD->(ADD)BORDER & computation of CORE */
+
             if( currentRecvLower == DataSpace<simDim>::create(0) &&
                 currentRecvUpper == DataSpace<simDim>::create(0) )
             {
@@ -522,6 +523,7 @@ public:
                  * to BORDER (send) and then updates the GUARD (receive)
                  * \todo split the last `receive` part in a separate method to
                  *       allow already a computation of CORE */
+
                 __setTransactionEvent(eRecvCurrent);
                 fieldJ->addCurrentToEMF<CORE + BORDER>(*myCurrentInterpolation);
             }

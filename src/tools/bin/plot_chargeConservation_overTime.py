@@ -140,8 +140,7 @@ def deviation_charge_conservation(h5file):
         Eym = (Ey[:, 1:] + Ey[:,:-1])/2.0
         Exm2 = Exm[:,1:]
         Eym2 = Eym[1:,:]
-        #print( Exm2.shape)
-        #print( Eym2.shape)
+
         
         # compute divergence of electric field according to Yee scheme
         div = ((Exm2[1:, 1:] - Exm2[1:, :-1])/CELL_WIDTH +
