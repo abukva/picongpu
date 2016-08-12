@@ -29,13 +29,13 @@ namespace picongpu
     {
         /** Duration of one timestep
          *  unit: seconds */
-        BOOST_CONSTEXPR_OR_CONST float_64 DELTA_T_SI = 1.4776889417278136e-17; // 1.044883e-16 Yee
+        BOOST_CONSTEXPR_OR_CONST float_64 DELTA_T_SI = 0.4430e-7 / SI::SPEED_OF_LIGHT_SI;
         /** equals X
          *  unit: meter */
-        BOOST_CONSTEXPR_OR_CONST float_64 CELL_WIDTH_SI = SI::SPEED_OF_LIGHT_SI * 1.4776889417278136e-17; // 0.0443e-6
+        BOOST_CONSTEXPR_OR_CONST float_64 CELL_WIDTH_SI = 0.4430e-7;
         /** equals Y - the propagation direction
          *  unit: meter */
-        BOOST_CONSTEXPR_OR_CONST float_64 CELL_HEIGHT_SI = CELL_WIDTH_SI;
+        BOOST_CONSTEXPR_OR_CONST float_64 CELL_HEIGHT_SI = 0.4430e-7;
         /** equals Z
          *  unit: meter */
         BOOST_CONSTEXPR_OR_CONST float_64 CELL_DEPTH_SI = CELL_WIDTH_SI;

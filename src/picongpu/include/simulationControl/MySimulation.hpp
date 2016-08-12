@@ -343,10 +343,10 @@ public:
         Environment<>::get().StreamController().addStreams(6);
 
         // create factory for the random number generator
-        this->rngFactory = new RNGFactory(Environment<simDim>::get().SubGrid().getLocalDomain().size);
+        //this->rngFactory = new RNGFactory(Environment<simDim>::get().SubGrid().getLocalDomain().size);
         // init factory
-        PMacc::GridController<simDim>& gridCon = PMacc::Environment<simDim>::get().GridController();
-        this->rngFactory->init(gridCon.getScalarPosition());
+        //PMacc::GridController<simDim>& gridCon = PMacc::Environment<simDim>::get().GridController();
+        //this->rngFactory->init(gridCon.getScalarPosition());
 
         // Initialize synchrotron functions, if there are synchrotron photon species
         typedef typename PMacc::particles::traits::FilterByFlag<VectorAllSpecies,
@@ -472,10 +472,10 @@ public:
 
         __setTransactionEvent(updateEvent);
         /** remove background field for particle pusher */
-        (*pushBGField)(fieldE, nvfct::Sub(), FieldBackgroundE(fieldE->getUnit()),
+        /*(*pushBGField)(fieldE, nvfct::Sub(), FieldBackgroundE(fieldE->getUnit()),
                        currentStep, FieldBackgroundE::InfluenceParticlePusher);
         (*pushBGField)(fieldB, nvfct::Sub(), FieldBackgroundB(fieldB->getUnit()),
-                       currentStep, FieldBackgroundB::InfluenceParticlePusher);
+                       currentStep, FieldBackgroundB::InfluenceParticlePusher);*/
 
         this->myFieldSolver->update_beforeCurrent(currentStep);
 

@@ -33,7 +33,7 @@ BOOST_CONSTEXPR_OR_CONST float_64 scale_image = 1.0;
 /*if true image is scaled if cellsize is not quadratic, else no scale*/
 BOOST_CONSTEXPR_OR_CONST bool scale_to_cellsize = true;
 
-BOOST_CONSTEXPR_OR_CONST bool white_box_per_GPU = true;
+BOOST_CONSTEXPR_OR_CONST bool white_box_per_GPU = false;
 
 namespace visPreview
 {
@@ -47,7 +47,7 @@ namespace visPreview
 // 5: BlowOut: typical fields, assuming that a LWFA in the blowout
 //             regime causes a bubble with radius of approx. the laser's
 //             beam waist (use for bubble fields)
-#define EM_FIELD_SCALE_CHANNEL1 -1
+#define EM_FIELD_SCALE_CHANNEL1 1
 #define EM_FIELD_SCALE_CHANNEL2 -1
 #define EM_FIELD_SCALE_CHANNEL3 -1
 
@@ -55,13 +55,13 @@ namespace visPreview
 BOOST_CONSTEXPR_OR_CONST float_X preParticleDens_opacity = 0.25;
 BOOST_CONSTEXPR_OR_CONST float_X preChannel1_opacity = 1.0;
 BOOST_CONSTEXPR_OR_CONST float_X preChannel2_opacity = 1.0;
-BOOST_CONSTEXPR_OR_CONST float_X preChannel3_opacity = .5;
+BOOST_CONSTEXPR_OR_CONST float_X preChannel3_opacity = 1.0;
 
 // specify color scales for each channel
-namespace preParticleDensCol = colorScales::grayInv;
+namespace preParticleDensCol = colorScales::red;
 namespace preChannel1Col = colorScales::green;
-namespace preChannel2Col = colorScales::red;
-namespace preChannel3Col = colorScales::blue;
+namespace preChannel2Col = colorScales::none;
+namespace preChannel3Col = colorScales::none;
 
 /* png preview and liveview settings for each channel */
 DINLINE float_X preChannel1(const float3_X& field_B, const float3_X& field_E, const float3_X& field_J)
@@ -71,12 +71,12 @@ DINLINE float_X preChannel1(const float3_X& field_B, const float3_X& field_E, co
 
 DINLINE float_X preChannel2(const float3_X& field_B, const float3_X& field_E, const float3_X& field_J)
 {
-    return field_E.y() * field_E.y();
+    return field_E.y();
 }
 
 DINLINE float_X preChannel3(const float3_X& field_B, const float3_X& field_E, const float3_X& field_J)
 {
-    return field_B.z() * field_B.z() ;
+    return -float_X(1.0) * field_E.y();
 }
 }
 }
