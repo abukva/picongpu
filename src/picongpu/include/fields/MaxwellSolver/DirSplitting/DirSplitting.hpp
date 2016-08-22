@@ -214,14 +214,14 @@ public:
         __setTransactionEvent(fieldE.asyncCommunication(__getTransactionEvent()));
         __setTransactionEvent(fieldB.asyncCommunication(__getTransactionEvent()));
 
-/*  enable this to fill the double buffer with the same values like the original field
+/*  enable this to fill the double buffer with the same values like the original field*/
         __startOperation(ITask::TASK_HOST);
         __startOperation(ITask::TASK_CUDA);
         fieldE.sync();
         fieldB.sync();
         fieldE.reset(currentStep);
         fieldB.reset(currentStep);
-*/
+
 
         BOOST_AUTO(fieldE_coreBorder,
             fieldE.getGridBuffer().getDeviceBuffer().
