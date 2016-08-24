@@ -13,3 +13,5 @@
 
 # original backup files
 *.orig
+
+.idea/

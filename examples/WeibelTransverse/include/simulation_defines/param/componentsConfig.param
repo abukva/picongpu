@@ -50,7 +50,7 @@ namespace picongpu
      *  - fieldSolverYeeNative : generic version of fieldSolverYee
      *    (need more shared memory per GPU and is slow)
      */
-    namespace fieldSolver = fieldSolverYee;
+    namespace fieldSolver = fieldSolverDirSplitting;
 
     /*enable (1) or disable (0) current calculation*/
 #define ENABLE_CURRENT 1

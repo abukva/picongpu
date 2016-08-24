@@ -29,16 +29,16 @@ namespace picongpu
     {
         /** Duration of one timestep
          *  unit: seconds */
-        BOOST_CONSTEXPR_OR_CONST float_64 DELTA_T_SI = 3.0e-17;
+        BOOST_CONSTEXPR_OR_CONST float_64 DELTA_T_SI = 6.0e-17;
         /** equals X
          *  unit: meter */
-        BOOST_CONSTEXPR_OR_CONST float_64 CELL_WIDTH_SI = 1.8e-8;
+        BOOST_CONSTEXPR_OR_CONST float_64 CELL_WIDTH_SI = DELTA_T_SI * SI::SPEED_OF_LIGHT_SI;
         /** equals Y - the propagation direction
          *  unit: meter */
-        BOOST_CONSTEXPR_OR_CONST float_64 CELL_HEIGHT_SI = 1.8e-8;
+        BOOST_CONSTEXPR_OR_CONST float_64 CELL_HEIGHT_SI = CELL_WIDTH_SI;
         /** equals Z
          *  unit: meter */
-        BOOST_CONSTEXPR_OR_CONST float_64 CELL_DEPTH_SI = 1.8e-8;
+        BOOST_CONSTEXPR_OR_CONST float_64 CELL_DEPTH_SI = CELL_WIDTH_SI;
     } //namespace SI
 
         //! Defines the size of the absorbing zone (in cells)
