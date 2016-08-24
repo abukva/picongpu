@@ -46,7 +46,7 @@ namespace picongpu
          *             dX == dY
          *             dX == dZ
          */
-        BOOST_CONSTEXPR_OR_CONST float_64 CELL_WIDTH_SI = 5.3662849982e-08; //DELTA_T_SI*SPEED_OF_LIGHT_SI;
+        BOOST_CONSTEXPR_OR_CONST float_64 CELL_WIDTH_SI = DELTA_T_SI*SPEED_OF_LIGHT_SI; //5.3662849982e-08;
 #else
         /* cell size for Yee solver (must fulfill CFL)
          * WARNING: if you change the field solver in `componentsConfig` you

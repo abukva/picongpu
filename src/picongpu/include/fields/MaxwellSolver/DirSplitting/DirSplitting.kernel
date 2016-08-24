@@ -73,29 +73,29 @@ struct DirSplittingKernel
         >::type jZDir;
 
         const float_X deltaT = DELTA_T;
-        const float_X constJE = (float_X(0.5)  / EPS0) * deltaT;
+        const float_X constJE = (float_X(0.25)  / EPS0) * deltaT;
 
         const PMACC_AUTO(minus,Minus::toRT());
         const PMACC_AUTO(plus,Plus::toRT());
         float a_plus = (*cursorB(minus)).z() + (*cursorE(minus)).y()
-#if (SENTOKU==0)
-            - ( (*cursorJ).y() + ( *cursorJ(jYDir::toRT()) ).y() ) * constJE
-#endif
+		#if (SENTOKU==0)
+		- ( (*cursorJ).y() + ( *cursorJ(jZDir::toRT()) ).y() + (*cursorJ(minus)).y() + ( *cursorJ( minus + jZDir::toRT() ) ).y() ) * constJE
+        #endif
         ;
         float a_minus = (*cursorB(plus)).z() - (*cursorE(plus)).y()
-#if (SENTOKU==0)
-            + ( (*cursorJ(plus)).y() + ( *cursorJ(plus + jYDir::toRT()) ).y() ) * constJE
-#endif
+		#if (SENTOKU==0)
+		+ ( (*cursorJ(plus)).y() + ( *cursorJ(plus + jZDir::toRT()) ).y() + ( *cursorJ).y() + ( *cursorJ(jZDir::toRT()) ).y() ) * constJE
+        #endif
         ;
         float a_prime_plus = (*cursorB(minus)).y() - (*cursorE(minus)).z()
-#if (SENTOKU==0)
-        + ( (*cursorJ).z() + ( *cursorJ(jZDir::toRT())).z() ) * constJE
-#endif
+		#if (SENTOKU==0)
+		+ ( (*cursorJ).z() + ( *cursorJ(jYDir::toRT())).z() + ( *cursorJ(minus) ).z() + ( *cursorJ(minus + jYDir::toRT() ) ).z() ) * constJE
+        #endif
         ;
         float a_prime_minus = (*cursorB(plus)).y() + (*cursorE(plus)).z()
-#if (SENTOKU==0)
-        - ( (*cursorJ(plus)).z() + (*cursorJ(plus + jZDir::toRT()) ).z() ) * constJE
-#endif
+		#if (SENTOKU==0)
+		- ( (*cursorJ(plus)).z() + (*cursorJ(plus + jYDir::toRT()) ).z() + ( *cursorJ).z()  + ( *cursorJ(jYDir::toRT()) ).z() ) * constJE
+        #endif
         ;
 
         __syncthreads();

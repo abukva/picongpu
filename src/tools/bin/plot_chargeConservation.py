@@ -108,20 +108,28 @@ def plotError(h5file):
 
         Exm = (Ex[1:, :] + Ex[:-1,:])/2.0
         Eym = (Ey[:, 1:] + Ey[:,:-1])/2.0
-        Exm2 = Exm[:,1:]
-        Eym2 = Eym[1:, :]
+
         #print( Exm2.shape)
         #print( Eym2.shape)
-        
+
         # compute divergence of electric field according to Yee scheme
         #div = ((Exm2[1:, 1:] - Exm2[1:, :-1])/CELL_WIDTH +
         #       (Eym2[1:, 1:] - Eym2[:-1, 1:])/CELL_HEIGHT)
-        div = ((Ex[1:, 1:] - Ex[1:, :-1])/CELL_WIDTH +
-               (Ey[1:, 1:] - Ey[:-1, 1:])/CELL_HEIGHT)
+        div1 = ((Ex[2:, 2:] - Ex[2:, 1:-1])/CELL_WIDTH +
+               (Ey[2:, 2:] - Ey[1:-1, 2:])/CELL_HEIGHT)
+        div2 = ((Ex[1:-1, 2:] - Ex[1:-1, 1:-1])/CELL_WIDTH +
+                (Ey[1:-1, 2:] - Ey[:-2, 2:])/CELL_HEIGHT)
+        div3 = ((Ex[1:-1, 2:] - Ex[1:-1, 1:-1])/CELL_WIDTH +
+                (Ey[1:-1, 2:] - Ey[:-2, 2:])/CELL_HEIGHT)
+        div4 = ((Ex[1:-1, 2:] - Ex[1:-1, 1:-1])/CELL_WIDTH +
+                (Ey[1:-1, 2:] - Ey[1:-1, 2:])/CELL_HEIGHT)
+
+        div = (div1 + div2 + div3 + div4) / 4.0
+
 
         # compute difference between electric field divergence and charge density
-        #diff = (div*EPS0  - charge[2:, 2:])
-        diff = (div*EPS0  - charge[1:, 1:])
+        #diff = (div*EPS0  - charge[0:-2, 0:-2])
+        diff = (div*EPS0  - charge[2:, 2:])
 
     else:
         # compute divergence of electric field according to Yee scheme
