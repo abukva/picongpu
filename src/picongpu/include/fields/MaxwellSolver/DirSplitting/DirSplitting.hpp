@@ -99,7 +99,7 @@ class DirSplitting : private ConditionCheck<fieldSolver::FieldSolver>
 {
 private:
     template<typename SpaceTwist, typename OrientationTwist,typename JSpaceTwist,typename CursorE, typename CursorB, typename CursorJ, typename GridSize>
-    void propagate(CursorE cursorE, CursorB cursorB,CursorJ cursorJ,CursorE old_cursorE, CursorB old_cursorB, GridSize gridSize) const
+    void propagate(CursorE cursorE, CursorB cursorB,CursorJ cursorJ,CursorE old_cursorE, CursorB old_cursorB, GridSize gridSize, const float_X timeFactor) const
     {
         using namespace cursor::tools;
         using namespace PMacc::math;
@@ -141,7 +141,7 @@ private:
                 cursor::make_NestedCursor(twistVectorForDirSplitting<SpaceTwistSimDim, OrientationTwist>(cursorJ)),
                 cursor::make_NestedCursor(twistVectorForDirSplitting<SpaceTwistSimDim, OrientationTwist>(old_cursorE)),
                 cursor::make_NestedCursor(twistVectorForDirSplitting<SpaceTwistSimDim, OrientationTwist>(old_cursorB)),
-                DirSplittingKernel<BlockDim,JSpaceTwist>((int)gridSizeTwisted.x()));
+                DirSplittingKernel<BlockDim,JSpaceTwist>((int)gridSizeTwisted.x(), timeFactor));
     }
 
 
@@ -260,7 +260,7 @@ public:
                   fieldJ_coreBorder.origin(),
                   old_fieldE_coreBorder.origin(),
                   old_fieldB_coreBorder.origin(),
-                  gridSize);
+                  gridSize, float_X(1.0));
 
 #if (SENTOKU==1) //prpagateX adds current
         propagateX<Space_XJ,Orientation_XJ, 1>(
@@ -274,6 +274,7 @@ public:
         __setTransactionEvent(fieldE.asyncCommunication(__getTransactionEvent()));
         __setTransactionEvent(fieldB.asyncCommunication(__getTransactionEvent()));
 
+	    // 1/2 time step y propagation
         typedef PMacc::math::CT::Int<1,2,0> Orientation_Y;
         typedef PMacc::math::CT::Int<1,0,2> Space_Y;
         typedef PMacc::math::CT::Int<0,1,2> JDir_Y;
@@ -283,7 +284,7 @@ public:
                   fieldJ_coreBorder.origin(),
                   old_fieldE_coreBorder.origin(),
                   old_fieldB_coreBorder.origin(),
-                  gridSize);
+                  gridSize, float_X(1.0));
 #if (SENTOKU==1)
         propagateX<Space_XJ,Orientation_XJ, 0>(
                   fieldE_coreBorder.origin(),
@@ -309,6 +310,20 @@ public:
 
         __setTransactionEvent(fieldE.asyncCommunication(__getTransactionEvent()));
         __setTransactionEvent(fieldB.asyncCommunication(__getTransactionEvent()));
+#endif
+
+#if 0
+	    //1/2 time step x propagation
+	    propagate<Space_X,Orientation_X,JDir_X>(
+			    fieldE_coreBorder.origin(),
+			    fieldB_coreBorder.origin(),
+			    fieldJ_coreBorder.origin(),
+			    old_fieldE_coreBorder.origin(),
+			    old_fieldB_coreBorder.origin(),
+			    gridSize, float_X(0.5));
+
+	    __setTransactionEvent(fieldE.asyncCommunication(__getTransactionEvent()));
+	    __setTransactionEvent(fieldB.asyncCommunication(__getTransactionEvent()));
 #endif
 
 #if (SIMDIM==DIM3)
