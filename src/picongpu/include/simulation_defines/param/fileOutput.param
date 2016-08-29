@@ -59,6 +59,24 @@ namespace picongpu
             CreateChargeDensityOperation<bmpl::_1>
             >::type ChargeDensity_Seq;
 
+    /* MidCurrentDensityComponent section define "component" as
+    * 0=X (default), 1=Y or 2=Z
+    */
+    typedef bmpl::transform<
+            VectorAllSpecies,
+            CreateMidCurrentDensityComponentOperation<bmpl::_1, bmpl::int_<0> >
+            >::type MidCurrentDensityX_Seq;
+
+    typedef bmpl::transform<
+            VectorAllSpecies,
+            CreateMidCurrentDensityComponentOperation<bmpl::_1, bmpl::int_<1> >
+            >::type MidCurrentDensityY_Seq;
+
+    typedef bmpl::transform<
+            VectorAllSpecies,
+            CreateMidCurrentDensityComponentOperation<bmpl::_1, bmpl::int_<2> >
+            >::type MidCurrentDensityZ_Seq;
+
     /* ParticleCounter section */
     typedef bmpl::transform<
             VectorAllSpecies,
@@ -86,9 +104,9 @@ namespace picongpu
      */
     typedef MakeSeq<
         ChargeDensity_Seq,
-        Counter_Seq,
-        EnergyDensity_Seq,
-        MomentumComponent_Seq
+        MidCurrentDensityX_Seq,
+        MidCurrentDensityY_Seq,
+        MidCurrentDensityZ_Seq
     >::type FieldTmpSolvers;
 
 
@@ -96,7 +114,7 @@ namespace picongpu
 
     /** Possible native fields: FieldE, FieldB, FieldJ
      */
-    typedef MakeSeq<FieldE, FieldB>::type NativeFileOutputFields;
+    typedef MakeSeq<FieldE, FieldB, FieldJ>::type NativeFileOutputFields;
 
     typedef MakeSeq<
         NativeFileOutputFields,

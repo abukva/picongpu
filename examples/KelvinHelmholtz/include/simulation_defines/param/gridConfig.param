@@ -32,7 +32,7 @@ namespace picongpu
          *  unit: seconds */
         //DS
         BOOST_CONSTEXPR_OR_CONST float_64 DELTA_T_SI = 1.79e-16;
-        //BOOST_CONSTEXPR_OR_CONST float_64 DELTA_T_SI = 1.2657e-16; for Yee
+        //BOOST_CONSTEXPR_OR_CONST float_64 DELTA_T_SI = 1.2657e-16; for Yee so they have same cell size
         /** equals X
          *  unit: meter */
 #define fieldSolverDirSplitting 1
@@ -46,13 +46,14 @@ namespace picongpu
          *             dX == dY
          *             dX == dZ
          */
-        BOOST_CONSTEXPR_OR_CONST float_64 CELL_WIDTH_SI = 5.3662849982e-08; //DELTA_T_SI*SPEED_OF_LIGHT_SI;
+        BOOST_CONSTEXPR_OR_CONST float_64 CELL_WIDTH_SI = DELTA_T_SI * SPEED_OF_LIGHT_SI; //5.3662849982e-08; yee
 #else
         /* cell size for Yee solver (must fulfill CFL)
          * WARNING: if you change the field solver in `componentsConfig` you
          * have to change the CELL_SIZE in this code path
          */
-        BOOST_CONSTEXPR_OR_CONST float_64 CELL_WIDTH_SI = 5.3662849982e-08;
+        BOOST_CONSTEXPR_OR_CONST float_64 CELL_WIDTH_SI = DELTA_T_SI * SPEED_OF_LIGHT_SI;
+        //BOOST_CONSTEXPR_OR_CONST float_64 CELL_WIDTH_SI = 9.29468e-8; //new yee value for the same DS time step
 #endif
 #undef fieldSolverDirSplitting
 
