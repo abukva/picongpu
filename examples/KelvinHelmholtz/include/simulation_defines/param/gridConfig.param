@@ -52,7 +52,8 @@ namespace picongpu
          * WARNING: if you change the field solver in `componentsConfig` you
          * have to change the CELL_SIZE in this code path
          */
-        BOOST_CONSTEXPR_OR_CONST float_64 CELL_WIDTH_SI = 5.3662849982e-08;
+        BOOST_CONSTEXPR_OR_CONST float_64 CELL_WIDTH_SI = 5.3662849982e-08; //DS
+        //BOOST_CONSTEXPR_OR_CONST float_64 CELL_WIDTH_SI = 9.29468e-08; //Yee
 #endif
 #undef fieldSolverDirSplitting
 

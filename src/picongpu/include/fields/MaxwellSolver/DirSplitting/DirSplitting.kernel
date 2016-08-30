@@ -54,8 +54,9 @@ struct DirSplittingKernel
         bmpl::integral_c<int,1>
     >::type Plus;
 
+	const float_X timeFactor;
     PMACC_ALIGN(totalLength,int);
-    DirSplittingKernel(int totalLength) : totalLength(totalLength) {}
+    DirSplittingKernel(int totalLength, const float_X timeFactorIn) : totalLength(totalLength), timeFactor(timeFactorIn) {}
 
     template<typename CursorE, typename CursorB, typename CursorJ, typename RCursorE, typename RCursorB >
     DINLINE void propagate(CursorE cursorE, CursorB cursorB, CursorJ cursorJ, RCursorE r_cursorE, RCursorB r_cursorB) const
@@ -77,22 +78,26 @@ struct DirSplittingKernel
 
         const PMACC_AUTO(minus,Minus::toRT());
         const PMACC_AUTO(plus,Plus::toRT());
-        float a_plus = (*cursorB(minus)).z() + (*cursorE(minus)).y()
+        float a_plus = (*cursorB(minus)).z() + (*cursorE(minus)).y() +
+		        ((timeFactor == float_X(0.5)) ? ((*cursorB).z() + (*cursorE).y()) : float_X(0.0))
 #if (SENTOKU==0)
-            - ( (*cursorJ).y() + ( *cursorJ(jYDir::toRT()) ).y() ) * constJE
+	        - ( (*cursorJ).y() + ( *cursorJ(jYDir::toRT()) ).y() ) * constJE
 #endif
         ;
-        float a_minus = (*cursorB(plus)).z() - (*cursorE(plus)).y()
+        float a_minus = (*cursorB(plus)).z() - (*cursorE(plus)).y() +
+		        ((timeFactor == float_X(0.5)) ? ((*cursorB).z() - (*cursorE).y()) : float_X(0.0))
 #if (SENTOKU==0)
             + ( (*cursorJ(plus)).y() + ( *cursorJ(plus + jYDir::toRT()) ).y() ) * constJE
 #endif
         ;
-        float a_prime_plus = (*cursorB(minus)).y() - (*cursorE(minus)).z()
+        float a_prime_plus = (*cursorB(minus)).y() - (*cursorE(minus)).z() +
+		        ((timeFactor == float_X(0.5)) ? ((*cursorB).y() - (*cursorE).z()) : float_X(0.0))
 #if (SENTOKU==0)
         + ( (*cursorJ).z() + ( *cursorJ(jZDir::toRT())).z() ) * constJE
 #endif
         ;
-        float a_prime_minus = (*cursorB(plus)).y() + (*cursorE(plus)).z()
+        float a_prime_minus = (*cursorB(plus)).y() + (*cursorE(plus)).z() +
+		        ((timeFactor == float_X(0.5)) ? ((*cursorB).y() + (*cursorE).z()) : float_X(0.0))
 #if (SENTOKU==0)
         - ( (*cursorJ(plus)).z() + (*cursorJ(plus + jZDir::toRT()) ).z() ) * constJE
 #endif
@@ -100,10 +105,10 @@ struct DirSplittingKernel
 
         __syncthreads();
 
-        (*cursorB).z() = 0.5f * (a_plus + a_minus); //if I enable the double buffer I need to ad += instead of =
-        (*cursorE).y() = 0.5f * (a_plus - a_minus);
-        (*cursorB).y() = 0.5f * (a_prime_plus + a_prime_minus);
-        (*cursorE).z() = 0.5f * (a_prime_minus - a_prime_plus);
+        (*cursorB).z() = timeFactor * 0.5f * (a_plus + a_minus); //if I enable the double buffer I need to ad += instead of =
+        (*cursorE).y() = timeFactor * 0.5f * (a_plus - a_minus);
+        (*cursorB).y() = timeFactor * 0.5f * (a_prime_plus + a_prime_minus);
+        (*cursorE).z() = timeFactor * 0.5f * (a_prime_minus - a_prime_plus);
 
         __syncthreads();
     }
