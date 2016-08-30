@@ -55,8 +55,9 @@ struct DirSplittingKernel
     >::type Plus;
 
 	const float_X timeFactor;
+	const float_X addCurrent;
     PMACC_ALIGN(totalLength,int);
-    DirSplittingKernel(int totalLength, const float_X timeFactorIn) : totalLength(totalLength), timeFactor(timeFactorIn) {}
+    DirSplittingKernel(int totalLength, const float_X timeFactorIn, const float_X addCurrentIn) : totalLength(totalLength), timeFactor(timeFactorIn), addCurrent(addCurrentIn) {}
 
     template<typename CursorE, typename CursorB, typename CursorJ, typename RCursorE, typename RCursorB >
     DINLINE void propagate(CursorE cursorE, CursorB cursorB, CursorJ cursorJ, RCursorE r_cursorE, RCursorB r_cursorB) const
@@ -81,25 +82,25 @@ struct DirSplittingKernel
         float a_plus = (*cursorB(minus)).z() + (*cursorE(minus)).y() +
 		        ((timeFactor == float_X(0.5)) ? ((*cursorB).z() + (*cursorE).y()) : float_X(0.0))
 #if (SENTOKU==0)
-	        - ( (*cursorJ).y() + ( *cursorJ(jYDir::toRT()) ).y() ) * constJE
+	        - ( (*cursorJ).y() + ( *cursorJ(jYDir::toRT()) ).y() ) * constJE * addCurrent
 #endif
         ;
         float a_minus = (*cursorB(plus)).z() - (*cursorE(plus)).y() +
 		        ((timeFactor == float_X(0.5)) ? ((*cursorB).z() - (*cursorE).y()) : float_X(0.0))
 #if (SENTOKU==0)
-            + ( (*cursorJ(plus)).y() + ( *cursorJ(plus + jYDir::toRT()) ).y() ) * constJE
+            + ( (*cursorJ(plus)).y() + ( *cursorJ(plus + jYDir::toRT()) ).y() ) * constJE * addCurrent
 #endif
         ;
         float a_prime_plus = (*cursorB(minus)).y() - (*cursorE(minus)).z() +
 		        ((timeFactor == float_X(0.5)) ? ((*cursorB).y() - (*cursorE).z()) : float_X(0.0))
 #if (SENTOKU==0)
-        + ( (*cursorJ).z() + ( *cursorJ(jZDir::toRT())).z() ) * constJE
+        + ( (*cursorJ).z() + ( *cursorJ(jZDir::toRT())).z() ) * constJE * addCurrent
 #endif
         ;
         float a_prime_minus = (*cursorB(plus)).y() + (*cursorE(plus)).z() +
 		        ((timeFactor == float_X(0.5)) ? ((*cursorB).y() + (*cursorE).z()) : float_X(0.0))
 #if (SENTOKU==0)
-        - ( (*cursorJ(plus)).z() + (*cursorJ(plus + jZDir::toRT()) ).z() ) * constJE
+        - ( (*cursorJ(plus)).z() + (*cursorJ(plus + jZDir::toRT()) ).z() ) * constJE * addCurrent
 #endif
         ;
 
