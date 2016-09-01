@@ -251,50 +251,83 @@ public:
 
         PMacc::math::Size_t<simDim> gridSize = fieldE_coreBorder.size();
 
-        typedef PMacc::math::CT::Int<0,1,2> Orientation_X;
-        typedef PMacc::math::CT::Int<0,1,2> Space_X;
-        typedef PMacc::math::CT::Int<0,2,1> JDir_X;
-        propagate<Space_X,Orientation_X,JDir_X>(
-                  fieldE_coreBorder.origin(),
-                  fieldB_coreBorder.origin(),
-                  fieldJ_coreBorder.origin(),
-                  old_fieldE_coreBorder.origin(),
-                  old_fieldB_coreBorder.origin(),
-                  gridSize, float_X(1.0), float_X(1.0));
+	    if(currentStep%2 == 0) {
+		    typedef PMacc::math::CT::Int<0, 1, 2> Orientation_X;
+		    typedef PMacc::math::CT::Int<0, 1, 2> Space_X;
+		    typedef PMacc::math::CT::Int<0, 2, 1> JDir_X;
+		    propagate<Space_X, Orientation_X, JDir_X>(
+				    fieldE_coreBorder.origin(),
+				    fieldB_coreBorder.origin(),
+				    fieldJ_coreBorder.origin(),
+				    old_fieldE_coreBorder.origin(),
+				    old_fieldB_coreBorder.origin(),
+				    gridSize, float_X(1.0), float_X(1.0));
 
-#if (SENTOKU==1) //prpagateX adds current
-        propagateX<Space_XJ,Orientation_XJ, 1>(
-                  fieldE_coreBorder.origin(),
-                  fieldB_coreBorder.origin(),
-                  fieldJ_coreBorder.origin(),
-                  old_fieldE_coreBorder.origin(),
-                  old_fieldB_coreBorder.origin(),
-                  gridSize);
+#if (SENTOKU == 1) //prpagateX adds current
+			propagateX<Space_XJ,Orientation_XJ, 1>(
+					  fieldE_coreBorder.origin(),
+					  fieldB_coreBorder.origin(),
+					  fieldJ_coreBorder.origin(),
+					  old_fieldE_coreBorder.origin(),
+					  old_fieldB_coreBorder.origin(),
+					  gridSize);
 #endif
-        __setTransactionEvent(fieldE.asyncCommunication(__getTransactionEvent()));
-        __setTransactionEvent(fieldB.asyncCommunication(__getTransactionEvent()));
+		    __setTransactionEvent(fieldE.asyncCommunication(__getTransactionEvent()));
+		    __setTransactionEvent(fieldB.asyncCommunication(__getTransactionEvent()));
 
-        typedef PMacc::math::CT::Int<1,2,0> Orientation_Y;
-        typedef PMacc::math::CT::Int<1,0,2> Space_Y;
-        typedef PMacc::math::CT::Int<0,1,2> JDir_Y;
-        propagate<Space_Y,Orientation_Y,JDir_Y>(
-                  fieldE_coreBorder.origin(),
-                  fieldB_coreBorder.origin(),
-                  fieldJ_coreBorder.origin(),
-                  old_fieldE_coreBorder.origin(),
-                  old_fieldB_coreBorder.origin(),
-                  gridSize, float_X(1.0), float_X(1.0));
-#if (SENTOKU==1)
-        propagateX<Space_XJ,Orientation_XJ, 0>(
-                  fieldE_coreBorder.origin(),
-                  fieldB_coreBorder.origin(),
-                  fieldJ_coreBorder.origin(),
-                  old_fieldE_coreBorder.origin(),
-                  old_fieldB_coreBorder.origin(),
-                  gridSize);
+		    typedef PMacc::math::CT::Int<1, 2, 0> Orientation_Y;
+		    typedef PMacc::math::CT::Int<1, 0, 2> Space_Y;
+		    typedef PMacc::math::CT::Int<0, 1, 2> JDir_Y;
+		    propagate<Space_Y, Orientation_Y, JDir_Y>(
+				    fieldE_coreBorder.origin(),
+				    fieldB_coreBorder.origin(),
+				    fieldJ_coreBorder.origin(),
+				    old_fieldE_coreBorder.origin(),
+				    old_fieldB_coreBorder.origin(),
+				    gridSize, float_X(1.0), float_X(1.0));
+#if (SENTOKU == 1)
+			propagateX<Space_XJ,Orientation_XJ, 0>(
+					  fieldE_coreBorder.origin(),
+					  fieldB_coreBorder.origin(),
+					  fieldJ_coreBorder.origin(),
+					  old_fieldE_coreBorder.origin(),
+					  old_fieldB_coreBorder.origin(),
+					  gridSize);
 #endif
-        __setTransactionEvent(fieldE.asyncCommunication(__getTransactionEvent()));
-        __setTransactionEvent(fieldB.asyncCommunication(__getTransactionEvent()));
+		    __setTransactionEvent(fieldE.asyncCommunication(__getTransactionEvent()));
+		    __setTransactionEvent(fieldB.asyncCommunication(__getTransactionEvent()));
+	    }
+	    else
+	    {
+		    typedef PMacc::math::CT::Int<1, 2, 0> Orientation_Y;
+		    typedef PMacc::math::CT::Int<1, 0, 2> Space_Y;
+		    typedef PMacc::math::CT::Int<0, 1, 2> JDir_Y;
+		    propagate<Space_Y, Orientation_Y, JDir_Y>(
+				    fieldE_coreBorder.origin(),
+				    fieldB_coreBorder.origin(),
+				    fieldJ_coreBorder.origin(),
+				    old_fieldE_coreBorder.origin(),
+				    old_fieldB_coreBorder.origin(),
+				    gridSize, float_X(1.0), float_X(1.0));
+
+		    __setTransactionEvent(fieldE.asyncCommunication(__getTransactionEvent()));
+		    __setTransactionEvent(fieldB.asyncCommunication(__getTransactionEvent()));
+
+		    typedef PMacc::math::CT::Int<0, 1, 2> Orientation_X;
+		    typedef PMacc::math::CT::Int<0, 1, 2> Space_X;
+		    typedef PMacc::math::CT::Int<0, 2, 1> JDir_X;
+		    propagate<Space_X, Orientation_X, JDir_X>(
+				    fieldE_coreBorder.origin(),
+				    fieldB_coreBorder.origin(),
+				    fieldJ_coreBorder.origin(),
+				    old_fieldE_coreBorder.origin(),
+				    old_fieldB_coreBorder.origin(),
+				    gridSize, float_X(1.0), float_X(1.0));
+
+		    __setTransactionEvent(fieldE.asyncCommunication(__getTransactionEvent()));
+		    __setTransactionEvent(fieldB.asyncCommunication(__getTransactionEvent()));
+
+	    }
 
 #if (SENTOKU==1)
 
@@ -318,7 +351,7 @@ public:
 			    fieldJ_coreBorder.origin(),
 			    old_fieldE_coreBorder.origin(),
 			    old_fieldB_coreBorder.origin(),
-			    gridSize, float_X(0.5), float_X(2.0));
+			    gridSize, float_X(1.0), float_X(1.0));
 
 	    __setTransactionEvent(fieldE.asyncCommunication(__getTransactionEvent()));
 	    __setTransactionEvent(fieldB.asyncCommunication(__getTransactionEvent()));
