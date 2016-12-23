@@ -254,7 +254,7 @@ public:
         typedef PMacc::math::CT::Int<0,1,2> Orientation_X;
         typedef PMacc::math::CT::Int<0,1,2> Space_X;
         typedef PMacc::math::CT::Int<0,2,1> JDir_X;
-        propagate<0, Space_X,Orientation_X,JDir_X>(
+        propagate<1, Space_X,Orientation_X,JDir_X>(
                   fieldE_coreBorder.origin(),
                   fieldB_coreBorder.origin(),
                   fieldJ_coreBorder.origin(),
@@ -316,7 +316,7 @@ public:
         typedef PMacc::math::CT::Int<2,0,1> Orientation_Z;
         typedef PMacc::math::CT::Int<2,0,1> Space_Z;
         typedef PMacc::math::CT::Int<0,2,1> JDir_Z;
-        propagate<1,Space_Z,Orientation_Z,JDir_Z>(
+        propagate<0,Space_Z,Orientation_Z,JDir_Z>(
                   fieldE_coreBorder.origin(),
                   fieldB_coreBorder.origin(),
                   fieldJ_coreBorder.origin(),
@@ -327,6 +327,28 @@ public:
         __setTransactionEvent(fieldE.asyncCommunication(__getTransactionEvent()));
         __setTransactionEvent(fieldB.asyncCommunication(__getTransactionEvent()));
 #endif
+
+        propagate<1, Space_Y,Orientation_Y,JDir_Y>(
+                fieldE_coreBorder.origin(),
+                fieldB_coreBorder.origin(),
+                fieldJ_coreBorder.origin(),
+                old_fieldE_coreBorder.origin(),
+                old_fieldB_coreBorder.origin(),
+                gridSize);
+
+        __setTransactionEvent(fieldE.asyncCommunication(__getTransactionEvent()));
+        __setTransactionEvent(fieldB.asyncCommunication(__getTransactionEvent()));
+
+        propagate<1, Space_X,Orientation_X,JDir_X>(
+                fieldE_coreBorder.origin(),
+                fieldB_coreBorder.origin(),
+                fieldJ_coreBorder.origin(),
+                old_fieldE_coreBorder.origin(),
+                old_fieldB_coreBorder.origin(),
+                gridSize);
+
+        __setTransactionEvent(fieldE.asyncCommunication(__getTransactionEvent()));
+        __setTransactionEvent(fieldB.asyncCommunication(__getTransactionEvent()));
     }
 
     void update_beforeCurrent(uint32_t) const
